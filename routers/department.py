@@ -7,6 +7,9 @@ from services.department import DepartmentService
 from schemas.department import Department
 from fastapi.encoders import jsonable_encoder
 
+from services.employee import EmployeeService
+from schemas.employee import Employee
+
 department_router = APIRouter()
 
 
@@ -17,14 +20,14 @@ def get_department() -> List[Department]:
     return JSONResponse(status_code=200, content=jsonable_encoder(result))
 
 
-@department_router.get('/department/{id}', tags=['department'], response_model=Department)
-def get_department(id: int) -> Department:
+@department_router.get('/department/{id}', tags=['department'], response_model=dict[Department, Employee])
+def get_department(id: int) -> dict[Department, Employee]:
     db = Session()
-    result = DepartmentService(db).get_department(id)
-    if not result:
+    result_department = DepartmentService(db).get_department(id)
+    if not result_department:
         return JSONResponse(status_code=404, content={"message": "Not Found"})
-    return JSONResponse(status_code=200, content=jsonable_encoder(result))
-
+    result_employees = EmployeeService(db).get_employee_by_department(id)
+    return JSONResponse(status_code=200, content=jsonable_encoder([result_department, result_employees]))
 
 @department_router.post('/departments', tags=['department'], response_model=dict, status_code=201)
 def create_department(department: Department) -> dict:
@@ -34,7 +37,7 @@ def create_department(department: Department) -> dict:
 
 
 @department_router.put('/department/{id}', tags=['department'], response_model=dict, status_code=200)
-def update_employee(id: int, department: Department) -> List:
+def update_department(id: int, department: Department) -> List:
     db = Session()
     result = DepartmentService(db).get_department(id)
     if not result:
@@ -49,5 +52,9 @@ def delete_department(id: int) -> dict:
     result = DepartmentService(db).get_department(id)
     if not result:
         return JSONResponse(status_code=404, content={"message": "Not Found"})
+    result_employees = EmployeeService(db).get_employee_by_department(id)
+    for employee in result_employees:
+        employee.department_id = 0
+        EmployeeService(db).update_employee(employee.id, employee)
     DepartmentService(db).delete_department(id)
     return JSONResponse(status_code=200, content={"message": "Deleted"})

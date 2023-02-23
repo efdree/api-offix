@@ -1,7 +1,6 @@
 from models.model import Employee as EmployeeModel
 from schemas.employee import Employee
 
-
 class EmployeeService():
 
     def __init__(self, db) -> None:
@@ -16,8 +15,14 @@ class EmployeeService():
             EmployeeModel.id == id).first()
         return result
 
+    def search_employee(self, name: str):
+        result = self.db.query(EmployeeModel).filter(EmployeeModel.name == name).all()
+        return result
+
     def get_employee_by_department(self, department_id):
-        return
+        result = self.db.query(EmployeeModel).filter(
+            EmployeeModel.department_id == department_id).all()
+        return result
 
     def create_employee(self, employee: Employee):
         new_employee = EmployeeModel(**employee.dict())
