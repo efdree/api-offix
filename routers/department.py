@@ -20,8 +20,8 @@ def get_department() -> List[Department]:
     return JSONResponse(status_code=200, content=jsonable_encoder(result))
 
 
-@department_router.get('/department/{id}', tags=['department'], response_model=dict[Department, Employee])
-def get_department(id: int) -> dict[Department, Employee]:
+@department_router.get('/department/{id}', tags=['department'], response_model=dict[Department, Employee], status_code=200)
+def get_department(id: int = Path(ge=1)) -> dict[Department, Employee]:
     db = Session()
     result_department = DepartmentService(db).get_department(id)
     if not result_department:

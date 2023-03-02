@@ -1,11 +1,11 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import Optional
 
 
 class Department(BaseModel):
 
-    id: int
+    id: Optional[int] = None
     name: str
     description: str
     cover: str
-    employee_count: int
+    employee_count: Optional[int] = 0

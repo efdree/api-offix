@@ -20,8 +20,8 @@ def get_employee() -> List[Employee]:
     return JSONResponse(status_code=200, content=jsonable_encoder(result))
 
 
-@employee_router.get('/employee/{id}', tags=['employee'], response_model=Employee)
-def get_employee(id: int) -> Employee:
+@employee_router.get('/employee/{id}', tags=['employee'], response_model=Employee, status_code=200)
+def get_employee(id: int = Path(ge=1)) -> Employee:
     db = Session()
     result = EmployeeService(db).get_employee(id)
     if not result:
@@ -30,7 +30,7 @@ def get_employee(id: int) -> Employee:
 
 
 @employee_router.get('/employees/', tags=['employee'], response_model=List[Employee])
-def search_employee(name: str) ->List[Employee]:
+def search_employee(name: str = Query(min_length=5, max_length=15)) ->List[Employee]:
     db = Session()
     result = EmployeeService(db).search_employee(name)
     return JSONResponse(status_code=200, content=jsonable_encoder(result))

@@ -5,7 +5,7 @@ from datetime import date
 
 class Employee(BaseModel):
 
-    id: int
+    id: Optional[int] = None
     name: str
     nationality: str
     role: str
