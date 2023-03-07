@@ -1,6 +1,6 @@
 from fastapi import Depends, Path, Query
 from fastapi.responses import JSONResponse
-from typing import List
+from typing import List, Dict
 from config.database import Session
 from fastapi import APIRouter
 from services.department import DepartmentService
@@ -20,8 +20,8 @@ def get_department() -> List[Department]:
     return JSONResponse(status_code=200, content=jsonable_encoder(result))
 
 
-@department_router.get('/department/{id}', tags=['department'], response_model=dict[Department, Employee], status_code=200)
-def get_department(id: int = Path(ge=1)) -> dict[Department, Employee]:
+@department_router.get('/department/{id}', tags=['department'], response_model=Dict[Department, Employee], status_code=200)
+def get_department(id: int = Path(ge=1)) -> Dict[Department, Employee]:
     db = Session()
     result_department = DepartmentService(db).get_department(id)
     if not result_department:

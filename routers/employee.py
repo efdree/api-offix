@@ -30,7 +30,7 @@ def get_employee(id: int = Path(ge=1)) -> Employee:
 
 
 @employee_router.get('/employees/', tags=['employee'], response_model=List[Employee])
-def search_employee(name: str = Query(min_length=5, max_length=15)) ->List[Employee]:
+def search_employee(name: str = Query(min_length=0, max_length=15)) ->List[Employee]:
     db = Session()
     result = EmployeeService(db).search_employee(name)
     return JSONResponse(status_code=200, content=jsonable_encoder(result))

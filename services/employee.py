@@ -16,7 +16,7 @@ class EmployeeService():
         return result
 
     def search_employee(self, name: str):
-        result = self.db.query(EmployeeModel).filter(EmployeeModel.name == name).all()
+        result = self.db.query(EmployeeModel).filter(EmployeeModel.name.contains(name)).all()
         return result
 
     def get_employee_by_department(self, department_id):
